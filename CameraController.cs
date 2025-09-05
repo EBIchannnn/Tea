@@ -30,7 +30,6 @@ public class CameraController : MonoBehaviour
 
     // 座りモーション用
     private bool isCrouching = false;
-    private float crouchTimer = 0f;
     // マウスルック用
     float yaw;
     float pitch;
@@ -124,30 +123,33 @@ public class CameraController : MonoBehaviour
 
     private void HandleCrouch()
     {
-        // Cキーを押した瞬間に座り開始
+        // Cキーで座る
         if (Input.GetKeyDown(KeyCode.C) && !isCrouching)
         {
-            for (; transform.position.y >= crouchHeight;)
-            {
-                transform.position += Vector3.down * crouchMoveSpeed * Time.deltaTime;
-            }
-            // 目標座標にピッタリ合わせる
-            var pos = transform.position;
-            pos.y = crouchHeight;
-            transform.position = pos;
             isCrouching = true;
+            targetY = crouchHeight;
         }
+        // Cキーで立つ
         else if (Input.GetKeyDown(KeyCode.C) && isCrouching)
         {
-            for (; transform.position.y <= startPosition.y;)
-            {
-                transform.position += Vector3.up * crouchMoveSpeed * Time.deltaTime;
-            }
-            // 目標座標にピッタリ合わせる
-            var pos = transform.position;
-            pos.y = startPosition.y;
-            transform.position = pos;
             isCrouching = false;
+            targetY = startPosition.y;
+        }
+
+        // 座り・立ちモーション（目標y座標まで移動）
+        if (isCrouching && transform.position.y > crouchHeight)
+        {
+            float newY = Mathf.Max(transform.position.y - crouchMoveSpeed * Time.deltaTime, crouchHeight);
+            var pos = transform.position;
+            pos.y = newY;
+            transform.position = pos;
+        }
+        else if (!isCrouching && transform.position.y < startPosition.y)
+        {
+            float newY = Mathf.Min(transform.position.y + crouchMoveSpeed * Time.deltaTime, startPosition.y);
+            var pos = transform.position;
+            pos.y = newY;
+            transform.position = pos;
         }
     }
 }
