@@ -77,25 +77,26 @@ public class FreeFlyCamera : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
         }
-        
+
         // --- 移動入力 ---
         float x = Input.GetAxisRaw("Horizontal"); // A/D
         float z = Input.GetAxisRaw("Vertical");   // W/S
 
         float y = 0f;
-        if (Input.GetKey(upKey) || Input.GetKey(KeyCode.Space))        y += 1f;  // 上昇
-        if (Input.GetKey(downKey) || Input.GetKey(KeyCode.LeftControl)) y -= 1f; // 下降
+        // if (Input.GetKey(upKey) || Input.GetKey(KeyCode.Space))        y += 1f;  // 上昇
+        // if (Input.GetKey(downKey) || Input.GetKey(KeyCode.LeftControl)) y -= 1f; // 下降
 
-        Vector3 inputDir = new Vector3(x, y, z);
+        Vector3 inputDir = new Vector3(x, 0f, z);
         if (inputDir.sqrMagnitude > 1f) inputDir.Normalize();
 
         // --- 速度調整 ---
         float speed = moveSpeed;
-        if (Input.GetKey(KeyCode.LeftShift)) speed *= sprintMultiplier; // 加速
-        if (Input.GetKey(KeyCode.LeftAlt))   speed *= slowMultiplier;   // 減速
+        // if (Input.GetKey(KeyCode.LeftShift)) speed *= sprintMultiplier; // 加速
+        // if (Input.GetKey(KeyCode.LeftAlt))   speed *= slowMultiplier;   // 減速
 
         // --- 移動（カメラの向き基準） ---
-        Vector3 worldMove = transform.TransformDirection(inputDir) * speed * Time.deltaTime;
-        transform.position += worldMove;
+        Vector3 move = transform.right * inputDir.x + transform.forward * inputDir.z;
+        if (move.sqrMagnitude > 1f) move.Normalize();
+        transform.position += move * speed * Time.deltaTime;
     }
 }
