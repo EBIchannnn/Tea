@@ -38,7 +38,8 @@ public class FreeFlyCamera : MonoBehaviour
         // カメラの向きを設定
         transform.rotation = Quaternion.Euler(startRotation);
     }
-
+    // UI表示状態（他のスクリプトで管理する想定）
+    public static bool IsUIActive = false;
     void Update()
     {
         // --- 視点回転（右クリック中） ---
@@ -55,6 +56,14 @@ public class FreeFlyCamera : MonoBehaviour
         //     Cursor.lockState = CursorLockMode.None;
         // }
 
+        // --- UI表示中はカーソル表示＆視点回転無効 ---
+        if (IsUIActive)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            return; // 視点回転・移動を無効化
+        }
+        
         // --- 視点回転（常時マウス移動で回転） ---
         if (enableMouseLook)
         {
