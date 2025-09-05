@@ -30,6 +30,7 @@ public class CameraController : MonoBehaviour
 
     // 座りモーション用
     private bool isCrouching = false;
+    private float targetY;
     // マウスルック用
     float yaw;
     float pitch;
@@ -137,16 +138,9 @@ public class CameraController : MonoBehaviour
         }
 
         // 座り・立ちモーション（目標y座標まで移動）
-        if (isCrouching && transform.position.y > crouchHeight)
+        if (transform.position.y != targetY)
         {
-            float newY = Mathf.Max(transform.position.y - crouchMoveSpeed * Time.deltaTime, crouchHeight);
-            var pos = transform.position;
-            pos.y = newY;
-            transform.position = pos;
-        }
-        else if (!isCrouching && transform.position.y < startPosition.y)
-        {
-            float newY = Mathf.Min(transform.position.y + crouchMoveSpeed * Time.deltaTime, startPosition.y);
+            float newY = Mathf.MoveTowards(transform.position.y, targetY, crouchMoveSpeed * Time.deltaTime);
             var pos = transform.position;
             pos.y = newY;
             transform.position = pos;
