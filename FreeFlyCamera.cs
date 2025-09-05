@@ -18,6 +18,11 @@ public class FreeFlyCamera : MonoBehaviour
     [SerializeField] float pitchMin = -89f;
     [SerializeField] float pitchMax = 89f;
 
+    // 座りモーション用
+    private bool isCrouching = false;
+    private float crouchTimer = 0f;
+    [SerializeField] private float crouchDuration = 0.5f; // 座る持続時間（秒）
+
     // 開始位置を指定
     public Vector3 startPosition = new Vector3(0, 5, -10);
     // 開始時の向きを指定（例：Quaternion.Euler(30, 0, 0) で少し下向き）
@@ -108,9 +113,22 @@ public class FreeFlyCamera : MonoBehaviour
         transform.position += move * speed * Time.deltaTime;
 
         // 座りモーション（Cキーでy座標を下げる）
-        if (Input.GetKey(KeyCode.C))
+        // Cキーを押した瞬間に座り開始
+        if (Input.GetKeyDown(KeyCode.C) && !isCrouching)
+        {
+            isCrouching = true;
+            crouchTimer = crouchDuration;
+        }
+
+        // 座りモーション（一定時間だけ下に下がる）
+        if (isCrouching)
         {
             transform.position += Vector3.down * speed * Time.deltaTime;
+            crouchTimer -= Time.deltaTime;
+            if (crouchTimer <= 0f)
+            {
+                isCrouching = false;
+            }
         }
     }
 }
