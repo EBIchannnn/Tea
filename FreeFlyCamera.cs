@@ -21,7 +21,7 @@ public class FreeFlyCamera : MonoBehaviour
     // 開始位置を指定
     public Vector3 startPosition = new Vector3(0, 5, -10);
     // 開始時の向きを指定（例：Quaternion.Euler(30, 0, 0) で少し下向き）
-    public Vector3 startRotation = new Vector3(30, 0, 0);
+    public Vector3 startRotation = new Vector3(10, 0, 0);
 
     float yaw;
     float pitch;
@@ -39,7 +39,7 @@ public class FreeFlyCamera : MonoBehaviour
         transform.rotation = Quaternion.Euler(startRotation);
     }
     // UI表示状態（他のスクリプトで管理する想定）
-    public static bool IsUIActive = false;
+    public static bool IsUIActive = true;
     void Update()
     {
         // --- 視点回転（右クリック中） ---
@@ -63,7 +63,7 @@ public class FreeFlyCamera : MonoBehaviour
             Cursor.visible = true;
             return; // 視点回転・移動を無効化
         }
-        
+
         // --- 視点回転（常時マウス移動で回転） ---
         if (enableMouseLook)
         {
