@@ -1,38 +1,45 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
-public class FreeFlyCamera : MonoBehaviour
+public class CameraController : MonoBehaviour
 {
     [Header("移動設定")]
     [SerializeField] float moveSpeed = 5f;           // 通常移動速度
     [SerializeField] float sprintMultiplier = 2f;    // Shiftで加速
-    [SerializeField] float slowMultiplier = 0.3f;    // Altで減速
+    // [SerializeField] float slowMultiplier = 0.3f;    // Altで減速
 
-    [Tooltip("上昇/下降のキー（Space/LeftCtrlでも可）")]
-    [SerializeField] KeyCode upKey = KeyCode.E;      // 上昇
-    [SerializeField] KeyCode downKey = KeyCode.Q;    // 下降
+    // [Header("上昇/下降のキー（Space/LeftCtrlでも可）")]
+    // [SerializeField] KeyCode upKey = KeyCode.E;      // 上昇
+    // [SerializeField] KeyCode downKey = KeyCode.Q;    // 下降
 
     [Header("マウスルック設定")]
-    [SerializeField] bool enableMouseLook = true;    // 右クリックで視点回転
+    // [SerializeField] bool enableMouseLook = true;    // 右クリックで視点回転
     [SerializeField] float lookSensitivity = 2.0f;   // マウス感度
-    [SerializeField] float pitchMin = -89f;
-    [SerializeField] float pitchMax = 89f;
+    // [SerializeField] float pitchMin = -89f;
+    // [SerializeField] float pitchMax = 89f;
+    [Header("座りモーション設定")]
+    [SerializeField] private float crouchHeight = 1.6f; // 座った時の高さ
+    [SerializeField] float crouchMoveSpeed = 3f;           // 座りモーションのスピード
+
+    [Header("その他設定")]
+    // 開始位置を指定
+    public Vector3 startPosition = new Vector3(0, 5, -10);
+    // 開始時の向きを指定（例：Quaternion.Euler(10, 0, 0) で少し下向き）
+    public Vector3 startRotation = new Vector3(10, 0, 0);
+
 
     // 座りモーション用
     private bool isCrouching = false;
     private float crouchTimer = 0f;
-    [SerializeField] private float crouchDuration = 0.5f; // 座る持続時間（秒）
-
-    // 開始位置を指定
-    public Vector3 startPosition = new Vector3(0, 5, -10);
-    // 開始時の向きを指定（例：Quaternion.Euler(30, 0, 0) で少し下向き）
-    public Vector3 startRotation = new Vector3(10, 0, 0);
-
+    // マウスルック用
     float yaw;
     float pitch;
+    // UI表示状態（他のスクリプトで管理する想定）
+    public static bool IsUIActive = true;
 
     void Awake()
     {
+        // 初期回転を設定
         yaw = startRotation.y;
         pitch = startRotation.x;
     }
@@ -43,8 +50,7 @@ public class FreeFlyCamera : MonoBehaviour
         // カメラの向きを設定
         transform.rotation = Quaternion.Euler(startRotation);
     }
-    // UI表示状態（他のスクリプトで管理する想定）
-    public static bool IsUIActive = true;
+
     void Update()
     {
         // --- 視点回転（右クリック中） ---
@@ -113,22 +119,35 @@ public class FreeFlyCamera : MonoBehaviour
         transform.position += move * speed * Time.deltaTime;
 
         // 座りモーション（Cキーでy座標を下げる）
+        HandleCrouch();
+    }
+
+    private void HandleCrouch()
+    {
         // Cキーを押した瞬間に座り開始
         if (Input.GetKeyDown(KeyCode.C) && !isCrouching)
         {
-            isCrouching = true;
-            crouchTimer = crouchDuration;
-        }
-
-        // 座りモーション（一定時間だけ下に下がる）
-        if (isCrouching)
-        {
-            transform.position += Vector3.down * speed * Time.deltaTime;
-            crouchTimer -= Time.deltaTime;
-            if (crouchTimer <= 0f)
+            for (; transform.position.y >= crouchHeight;)
             {
-                isCrouching = false;
+                transform.position += Vector3.down * crouchMoveSpeed * Time.deltaTime;
             }
+            // 目標座標にピッタリ合わせる
+            var pos = transform.position;
+            pos.y = crouchHeight;
+            transform.position = pos;
+            isCrouching = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.C) && isCrouching)
+        {
+            for (; transform.position.y <= startPosition.y;)
+            {
+                transform.position += Vector3.up * crouchMoveSpeed * Time.deltaTime;
+            }
+            // 目標座標にピッタリ合わせる
+            var pos = transform.position;
+            pos.y = startPosition.y;
+            transform.position = pos;
+            isCrouching = false;
         }
     }
 }
