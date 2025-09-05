@@ -18,13 +18,12 @@ public class CameraController : MonoBehaviour
     [SerializeField] float pitchMin = -89f;
     [SerializeField] float pitchMax = 89f;
     [Header("座りモーション設定")]
-    [SerializeField] private float crouchHeight = 1.6f; // 座った時の高さ
-    [SerializeField] float crouchMoveSpeed = 3f;           // 座りモーションのスピード
+    [SerializeField] private float crouchHeight = 1.75f; // 座った時の高さ
+    [SerializeField] float crouchMoveSpeed = 3f; // 座りモーションのスピード
 
     [Header("その他設定")]
     // 開始位置を指定
-    public Vector3 startPosition = new Vector3(0, 5, -10);
-    // 開始時の向きを指定（例：Quaternion.Euler(10, 0, 0) で少し下向き）
+    public Vector3 startPosition = new Vector3(2.5f, 2.6f, -1.7f);
     public Vector3 startRotation = new Vector3(10, 0, 0);
 
 
@@ -130,7 +129,11 @@ public class CameraController : MonoBehaviour
             targetY = startPosition.y;
         }
 
-        // 座り・立ちモーション（目標y座標まで移動）
+        // 毎フレーム目標座標へ移動
+        MoveToY(targetY);
+    }
+    private void MoveToY(float targetY)
+    {
         if (transform.position.y != targetY)
         {
             float newY = Mathf.MoveTowards(transform.position.y, targetY, crouchMoveSpeed * Time.deltaTime);
@@ -140,3 +143,5 @@ public class CameraController : MonoBehaviour
         }
     }
 }
+
+
