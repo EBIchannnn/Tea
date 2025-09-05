@@ -107,16 +107,10 @@ public class FreeFlyCamera : MonoBehaviour
         if (move.sqrMagnitude > 1f) move.Normalize();
         transform.position += move * speed * Time.deltaTime;
 
-        //座りモーション
+        // 座りモーション（Cキーでy座標を下げる）
         if (Input.GetKey(KeyCode.C))
         {
-            y -= 1f; // 下降
-            Vector3 down = transform.up;
-            down.y = 0f;
-            down.Normalize();
-            Vector3 move2 = down * y;
-            if (move2.sqrMagnitude > 1f) move2.Normalize();
-            transform.position += move2 * speed * Time.deltaTime;
+            transform.position += Vector3.down * speed * Time.deltaTime;
         }
     }
 }
