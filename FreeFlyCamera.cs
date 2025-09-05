@@ -108,7 +108,7 @@ public class FreeFlyCamera : MonoBehaviour
         transform.position += move * speed * Time.deltaTime;
 
         //座りモーション
-        if (Input.GetKey(KeyCode.c))
+        if (Input.GetKey(KeyCode.C))
         {
             y -= 1f; // 下降
             Vector3 down = transform.up;
