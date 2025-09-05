@@ -95,7 +95,15 @@ public class FreeFlyCamera : MonoBehaviour
         // if (Input.GetKey(KeyCode.LeftAlt))   speed *= slowMultiplier;   // 減速
 
         // --- 移動（カメラの向き基準） ---
-        Vector3 move = transform.right * inputDir.x + transform.forward * inputDir.z;
+        Vector3 forward = transform.forward;
+        forward.y = 0f;
+        forward.Normalize();
+
+        Vector3 right = transform.right;
+        right.y = 0f;
+        right.Normalize();
+
+        Vector3 move = right * inputDir.x + forward * inputDir.z;
         if (move.sqrMagnitude > 1f) move.Normalize();
         transform.position += move * speed * Time.deltaTime;
     }
