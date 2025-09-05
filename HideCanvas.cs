@@ -11,7 +11,7 @@ public class HideCanvas : MonoBehaviour
         if (targetCanvas != null)
         {
             targetCanvas.gameObject.SetActive(true);
-            FreeFlyCamera.IsUIActive = true;
+            CameraController.IsUIActive = true;
         }
     }
 
@@ -21,7 +21,7 @@ public class HideCanvas : MonoBehaviour
         if (targetCanvas != null)
         {
             targetCanvas.gameObject.SetActive(false);
-            FreeFlyCamera.IsUIActive = false;
+            CameraController.IsUIActive = false;
         }
     }
 }
