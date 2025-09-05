@@ -15,8 +15,8 @@ public class CameraController : MonoBehaviour
     [Header("マウスルック設定")]
     // [SerializeField] bool enableMouseLook = true;    // 右クリックで視点回転
     [SerializeField] float lookSensitivity = 2.0f;   // マウス感度
-    // [SerializeField] float pitchMin = -89f;
-    // [SerializeField] float pitchMax = 89f;
+    [SerializeField] float pitchMin = -89f;
+    [SerializeField] float pitchMax = 89f;
     [Header("座りモーション設定")]
     [SerializeField] private float crouchHeight = 1.6f; // 座った時の高さ
     [SerializeField] float crouchMoveSpeed = 3f;           // 座りモーションのスピード
@@ -76,24 +76,17 @@ public class CameraController : MonoBehaviour
         }
 
         // --- 視点回転（常時マウス移動で回転） ---
-        if (enableMouseLook)
-        {
-            yaw += Input.GetAxis("Mouse X") * lookSensitivity;
-            pitch -= Input.GetAxis("Mouse Y") * lookSensitivity;
-            pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
-            transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
-            Cursor.lockState = CursorLockMode.Locked;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.None;
-        }
+        yaw += Input.GetAxis("Mouse X") * lookSensitivity;
+        pitch -= Input.GetAxis("Mouse Y") * lookSensitivity;
+        pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
+        transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
+        Cursor.lockState = CursorLockMode.Locked;
 
         // --- 移動入力 ---
         float x = Input.GetAxisRaw("Horizontal"); // A/D
         float z = Input.GetAxisRaw("Vertical");   // W/S
 
-        float y = 0f;
+        // float y = 0f;
         // if (Input.GetKey(upKey) || Input.GetKey(KeyCode.Space))        y += 1f;  // 上昇
         // if (Input.GetKey(downKey) || Input.GetKey(KeyCode.LeftControl)) y -= 1f; // 下降
 
