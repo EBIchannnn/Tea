@@ -111,7 +111,7 @@ public class CameraController : MonoBehaviour
         transform.position += move * speed * Time.deltaTime;
 
         // 座りモーション（Cキーでy座標を下げる）
-        HandleCrouch();
+        // HandleCrouch();
     }
 
     private void HandleCrouch()
